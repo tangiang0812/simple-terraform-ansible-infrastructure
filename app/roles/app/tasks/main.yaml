@@ -1,0 +1,41 @@
+# vim: ft=yaml.ansible
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: true
+    state: present
+
+- name: Install GnuPG
+  ansible.builtin.apt:
+    name: gnupg
+    state: present
+
+- name: Add Docker GPG apt Key
+  ansible.builtin.apt_key:
+    url: https://download.docker.com/linux/debian/gpg
+    state: present
+
+- name: Add Docker Repository
+  ansible.builtin.apt_repository:
+    repo: deb https://download.docker.com/linux/debian bookworm stable
+    state: present
+
+- name: Update apt and install docker-ce
+  ansible.builtin.apt:
+    name: docker-ce
+    state: present
+    update_cache: true
+
+- name: Add the user 'admin' to the group of 'docker'
+  ansible.builtin.user:
+    name: admin
+    comment: admin user
+    groups: docker
+    append: true
+# - name: Find out what the remote machine's mounts are
+#   ansible.builtin.slurp:
+#     src: /var/lib/jenkins/secrets/initialAdminPassword
+#   register: mounts
+#
+# - name: Print returned information
+#   ansible.builtin.debug:
+#     msg: "{{ mounts['content'] | b64decode }}"

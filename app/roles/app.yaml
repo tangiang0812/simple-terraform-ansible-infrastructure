@@ -1,0 +1,20 @@
+# vim: ft=yaml.ansible
+- name: Install Jenkins
+  hosts: all
+  become: true
+  roles:
+    - app
+  # tasks:
+  #   - name: Install Nginx
+  #     ansible.builtin.apt:
+  #       name: nginx
+  #       state: present
+  #   - name: Add index page
+  #     ansible.builtin.template:
+  #       src: index.html
+  #       dest: /var/www/html/index.html
+  #       mode: '0644'
+  #   - name: Start Nginx
+  #     ansible.builtin.service:
+  #       name: nginx
+  #       state: started

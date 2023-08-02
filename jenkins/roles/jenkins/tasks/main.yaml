@@ -1,0 +1,75 @@
+# vim: ft=yaml.ansible
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: true
+    state: present
+
+- name: Install GnuPG
+  ansible.builtin.apt:
+    name: gnupg
+    state: present
+
+- name: Download Jenkins
+  ansible.builtin.apt_key:
+    url: "{{ jenkins.repo_URL }}"
+    state: present
+  become: true
+
+- name: Ensure the repository is configured
+  ansible.builtin.apt_repository:
+    repo: deb https://pkg.jenkins.io/debian binary/
+    state: present
+  become: true
+
+- name: Install Java
+  ansible.builtin.apt:
+    name: "{{ java }}"
+    state: present
+
+- name: Install Git
+  ansible.builtin.apt:
+    name: git
+    state: present
+
+- name: Install Jenkins
+  ansible.builtin.apt:
+    name: jenkins
+    state: present
+
+- name: Start Jenkins
+  ansible.builtin.service:
+    name: jenkins
+    enabled: true
+    state: started
+
+- name: Add Docker GPG apt Key
+  ansible.builtin.apt_key:
+    url: https://download.docker.com/linux/debian/gpg
+    state: present
+
+- name: Add Docker Repository
+  ansible.builtin.apt_repository:
+    repo: deb https://download.docker.com/linux/debian bookworm stable
+    state: present
+
+- name: Update apt and install docker-ce
+  ansible.builtin.apt:
+    name: docker-ce
+    state: present
+    update_cache: true
+
+- name: Add the user 'jenkins' to the group of 'docker'
+  ansible.builtin.user:
+    name: jenkins
+    comment: Jenkins user
+    groups: docker
+    append: true
+
+# - name: Find out what the remote machine's mounts are
+#   ansible.builtin.slurp:
+#     src: /var/lib/jenkins/secrets/initialAdminPassword
+#   register: mounts
+#
+# - name: Print returned information
+#   ansible.builtin.debug:
+#     msg: "{{ mounts['content'] | b64decode }}"

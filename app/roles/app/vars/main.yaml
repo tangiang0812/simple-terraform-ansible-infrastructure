@@ -1,0 +1,4 @@
+# vim: ft=yaml.ansible
+java: "openjdk-17-jdk"
+jenkins:
+  repo_URL: "https://pkg.jenkins.io/debian/jenkins.io-2023.key"
